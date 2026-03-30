@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Formulaire Patient')}"></head>
+<body class="bg-gray-50">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="bg-indigo-600 px-6 py-4">
+                <h2 class="text-xl font-bold text-white" th:text="${patient.id == null ? 'Nouveau Dossier Patient' : 'Modifier Dossier Patient'}"></h2>
+            </div>
+            <form th:action="@{/patients/enregistrer}" th:object="${patient}" method="post" class="p-6 space-y-6">
+                <input type="hidden" th:field="*{id}">
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nom Complet</label>
+                    <input type="text" th:field="*{nomComplet}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Numéro d'Identité (CIN)</label>
+                    <input type="text" th:field="*{numeroIdentite}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Date de Naissance</label>
+                    <input type="date" th:field="*{dateDeNaissance}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Type d'Assurance</label>
+                    <select th:field="*{typeAssurance}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="AMO">AMO</option>
+                        <option value="CNOPS">CNOPS</option>
+                        <option value="Privée">Privée</option>
+                        <option value="Aucune">Aucune</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <a th:href="@{/patients}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium">Annuler</a>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

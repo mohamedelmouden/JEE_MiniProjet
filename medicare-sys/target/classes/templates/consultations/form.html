@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Planifier Consultation')}"></head>
+<body class="bg-gray-50">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="bg-red-600 px-6 py-4">
+                <h2 class="text-xl font-bold text-white">Planifier une Consultation</h2>
+            </div>
+            <form th:action="@{/consultations/enregistrer}" th:object="${consultation}" method="post" class="p-6 space-y-6">
+                <input type="hidden" th:field="*{id}">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Patient</label>
+                        <select th:field="*{patient.id}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                            <option value="">Choisir un patient...</option>
+                            <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.nomComplet + ' (' + p.numeroIdentite + ')'}"></option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Praticien</label>
+                        <select th:field="*{medecin.id}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                            <option value="">Choisir un praticien...</option>
+                            <option th:each="m : ${praticiens}" th:value="${m.id}" th:text="${m.nomComplet + ' - ' + m.specialiteMedicale}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Date et Heure</label>
+                        <input type="datetime-local" th:field="*{dateHeure}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Statut Initial</label>
+                        <select th:field="*{statut}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-red-500 focus:border-red-500 sm:text-sm">
+                            <option th:each="st : ${statuts}" th:value="${st}" th:text="${st}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Motif de la Consultation</label>
+                    <textarea th:field="*{motifConsultation}" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="Ex: Contrôle annuel, Douleurs abdominales..."></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4">
+                    <a th:href="@{/consultations}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium">Annuler</a>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium">Planifier</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

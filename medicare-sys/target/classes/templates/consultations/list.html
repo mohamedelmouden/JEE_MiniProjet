@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Agenda des Consultations')}"></head>
+<body class="bg-gray-50">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <h1 class="text-2xl font-bold text-gray-900">Agenda des Consultations</h1>
+            <div class="flex gap-2">
+                <a th:href="@{/consultations/nouveau}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    <i class="fas fa-calendar-plus mr-2"></i>Nouvelle Consultation
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white p-4 rounded-lg shadow mb-8">
+            <form th:action="@{/consultations}" method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Par Spécialité</label>
+                    <select name="specialite" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Toutes les spécialités</option>
+                        <option th:each="s : ${specialites}" th:value="${s}" th:text="${s}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-500 uppercase mb-1">Par Statut</label>
+                    <select name="statut" class="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Tous les statuts</option>
+                        <option th:each="st : ${statuts}" th:value="${st}" th:text="${st}"></option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-200 flex-1">Filtrer</button>
+                    <a th:href="@{/consultations}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200">Réinitialiser</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Heure</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Praticien</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Motif</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="c : ${consultations}">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium" th:text="${#temporals.format(c.dateHeure, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${c.patient.nomComplet}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="font-medium text-gray-900" th:text="${c.medecin.nomComplet}"></div>
+                            <div class="text-xs text-gray-400" th:text="${c.medecin.specialiteMedicale}"></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${c.motifConsultation}"></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span th:class="${'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + 
+                                (c.statut.name() == 'PLANIFIEE' ? 'bg-yellow-100 text-yellow-800' : 
+                                (c.statut.name() == 'CONFIRMEE' ? 'bg-green-100 text-green-800' : 
+                                (c.statut.name() == 'ANNULEE' ? 'bg-red-100 text-red-800' : 
+                                (c.statut.name() == 'ABSENT' ? 'bg-gray-100 text-gray-800' : 'bg-blue-100 text-blue-800'))))}" 
+                                th:text="${c.statut}"></span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex justify-end space-x-2">
+                                <a th:href="@{/consultations/statut/{id}/CONFIRMEE(id=${c.id})}" class="text-green-600 hover:text-green-900" title="Valider"><i class="fas fa-check-circle"></i></a>
+                                <a th:href="@{/consultations/statut/{id}/ANNULEE(id=${c.id})}" class="text-red-600 hover:text-red-900" title="Annuler"><i class="fas fa-times-circle"></i></a>
+                                <a th:href="@{/consultations/statut/{id}/ABSENT(id=${c.id})}" class="text-gray-600 hover:text-gray-900" title="Marquer Absent"><i class="fas fa-user-slash"></i></a>
+                                <a th:href="@{/consultations/supprimer/{id}(id=${c.id})}" class="text-red-400 hover:text-red-600" onclick="return confirm('Supprimer ?')"><i class="fas fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
