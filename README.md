@@ -31,7 +31,7 @@
 
 | Composant | Technologie |
 | :--- | :--- |
-| **Backend** | Spring Boot 3.2.4 (Java 17) |
+| **Backend** | Spring Boot 3.2.4 (Java 17+) |
 | **Persistance** | Spring Data JPA / Hibernate |
 | **Base de Données** | MySQL |
 | **Frontend** | Thymeleaf & Tailwind CSS |
